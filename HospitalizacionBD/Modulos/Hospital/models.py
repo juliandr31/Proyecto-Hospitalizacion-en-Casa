@@ -10,10 +10,16 @@ class Persona(models.Model):
     sexos = [('F','Femenino'), ('M', 'Masculino')]
     Genero = models.CharField(max_length=1, choices=sexos, default='F')
     Clave = models.CharField(max_length=45, null=False, blank=False)
-    Rol = models.CharField(max_length=45, null=False, blank=False)
+    roles = [('1', 'Paciente'), ('2', 'Médico'), ('3', 'Familiar'), ('4', 'Auxiliar')]
+    #Rol = models.CharField(max_length=45, null=False, blank=False)
+    Rol = models.CharField(max_length=1, choices=roles)
+
+    def nombrePersona(self):
+        txt = "{0} {1}"
+        return txt.format(self.Nombre, self.Apellido)
 
     def __str__(self):
-        txt = "{0} {1}"
+        txt = "Nombre: {0} {1}"
         return txt.format(self.Nombre, self.Apellido)
 
 
@@ -22,9 +28,13 @@ class Familiar(models.Model):
     Correo = models.CharField(max_length=45, null=False, blank=False)
     Id = models.OneToOneField(Persona, null=False, blank=False, on_delete=models.CASCADE, primary_key= True)
 
-    def __str__(self):
-        txt = "familiar con parentesco {0}"
+    def parentescoFamiliar(self):
+        txt = "Parentesco de familiar: {0}"
         return txt.format(self.Parentesco)
+
+    def __str__(self):
+        txt = "{0} familiar con parentesco: {1}"
+        return txt.format(Persona.nombrePersona(self.Id) , self.Parentesco)
 
 
 class Medico(models.Model):
@@ -32,9 +42,13 @@ class Medico(models.Model):
     Id = models.OneToOneField(Persona, null=False, blank=False, on_delete=models.CASCADE, primary_key= True)
     Registro = models.CharField(max_length=45, null=False, blank=False)
 
-    def __str__(self):
-        txt = "médico con especialidad: {0}"
+    def especialidadMedico(self):
+        txt = "Especialidad de médico: {0}"
         return txt.format(self.Especialidad)
+
+    def __str__(self):
+        txt = "{0} médico con especialidad: {1}"
+        return txt.format(Persona.nombrePersona(self.Id), self.Especialidad)
 
 
 class Paciente(models.Model):
@@ -47,9 +61,13 @@ class Paciente(models.Model):
     MedicoId = models.OneToOneField(Medico, null=False, blank=False, on_delete=models.CASCADE)
     FamiliarId = models.OneToOneField(Familiar, null=False, blank=False, on_delete=models.CASCADE)
 
+    def nombrePaciente(self):
+        txt = "{0}"
+        return txt.format(Persona.nombrePersona(self.Id))
+
     def __str__(self):
-        txt = "Paciente. Especialidad de médico: {0}. Familiar: {1}"
-        return txt.format(Medico.Especialidad, Familiar.Parentesco)
+        txt = "Paciente: {0} . {1}. {2}"
+        return txt.format(Persona.nombrePersona(self.Id), Medico.especialidadMedico(self.MedicoId), Familiar.parentescoFamiliar(self.FamiliarId))
 
 
 class Auxiliar(models.Model):
@@ -75,7 +93,7 @@ class SignosVitales(models.Model):
 
     def __str__(self):
         txt = "Registro de signos vitales del paciente {0}"
-        return txt.format(self.PacienteId)
+        return txt.format(Paciente.nombrePaciente(self.PacienteId))
 
 
 class Diagnostico(models.Model):
@@ -87,5 +105,5 @@ class Diagnostico(models.Model):
     Paciente = models.ForeignKey(Paciente, null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
-        txt = "Diagnóstico: {0} Sugerencia: {1}"
-        return txt.format(self.Descripcion, self.Sugerencia)
+        txt = "{0}. Diagnóstico: {1}. Sugerencia: {2}."
+        return txt.format(Paciente.nombrePaciente(self.Paciente) ,self.Descripcion, self.Sugerencia)
