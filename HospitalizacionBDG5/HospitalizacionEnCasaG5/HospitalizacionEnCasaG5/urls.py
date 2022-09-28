@@ -20,10 +20,20 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshVie
 from Aplicacion import views
 
 urlpatterns = [
-    path('login/', TokenObtainPairView.as_view()),
-    path('refresh/', TokenRefreshView.as_view()),
-    path('user/', views.UserCreateView.as_view()),
-    path('user/<int:pk>/', views.UserDetailView.as_view()),
+   # path('login/', TokenObtainPairView.as_view()),
+    #path('refresh/', TokenRefreshView.as_view()),
+    path('user/', views.PersonaList.as_view()),
+    path('user/<int:pk>/', views.PersonaRetrieveUpdateDestroy.as_view()),
+    path('medico/', views.MedicoListCreate.as_view()),
+    path('medico/<int:pk>/', views.MedicoRetrieveUpdateView.as_view()),
+    path('auxiliar/', views.AuxiliarListCreate.as_view()),
+    path('auxiliar/<int:pk>/', views.AuxiliarRetrieveUpdateView.as_view()),
+    path('familiar/', views.FamiliarListCreate.as_view()),
+    path('familiar/<int:pk>/', views.FamiliarRetrieveUpdateView.as_view()),
+    path('paciente/', views.PacienteListCreate.as_view()),
+    path('paciente/<int:pk>/', views.PacienteRetrieveUpdateView.as_view()),
+    path('enfermero/', views.EnfermeroListCreate.as_view()),
+    path('enfermero/<int:pk>/', views.EnfermeroRetrieveUpdateView.as_view()),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls))
 ]

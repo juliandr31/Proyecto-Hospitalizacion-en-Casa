@@ -36,7 +36,7 @@ class Persona(AbstractBaseUser, PermissionsMixin):
     #Rol = models.CharField(max_length=45, null=False, blank=False)
     rol = models.CharField('Rol',max_length=1, choices=roles)
     username = models.CharField(max_length=45, null=False, blank=False, unique=True)
-    password = models.CharField(max_length=45, null=False, blank=False)
+    password = models.CharField(max_length=256, null=False, blank=False) #La longitud es esa porque se almacena el Hash y no la contraseña del usuario
 
     def save(self, **kwargs):
         some_salt = 'mMUj0DrIK6vgtdIYepkIxN'
