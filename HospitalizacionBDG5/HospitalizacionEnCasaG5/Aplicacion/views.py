@@ -1,5 +1,4 @@
-from django.shortcuts import render
-
+from urllib import request, response
 from rest_framework import status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -18,7 +17,7 @@ class PersonaList(generics.ListCreateAPIView):
     queryset = Persona.objects.all() #Acá se le dice al serialziador que coja todos los parámetros
     serializer_class = PersonaSerializer
     # permission_classes = (IsAuthenticated,)
-
+    
     def list(self, request):
         print("GET a todos los usuarios del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
@@ -26,7 +25,6 @@ class PersonaList(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
     
-
 class PersonaRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
@@ -74,12 +72,19 @@ class MedicoListCreate(generics.ListCreateAPIView):
     serializer_class = MedicoSerializer
     # permission_classes = (IsAuthenticated,)
 
-    def list(self, request):
-        print("GET a todos los médicos del sistema")
-        queryset = self.get_queryset() #Acá se piden todos los objetos
-        serializer = MedicoSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.data) #La respuesta es la data que trae e serializador
+    def get(self, request, *args, **kwargs):
+        print("GET a médico")
+        """ if valid_data['user_id'] != kwargs['pk']:
+            stringResponse = {'detail':'Unauthorized Request'}
+            return Response(stringResponse, status=status.HTTP_401_UNAUTHORIZED) """
+        return super().get(request, *args, **kwargs)
+
+    # def list(self, request):
+    #     print("GET a todos los médicos del sistema")
+    #     queryset = self.get_queryset() #Acá se piden todos los objetos
+    #     serializer = MedicoSerializer(queryset, many=True)
+    #     serializer.is_valid(raise_exception=True)
+    #     return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
     def post(self, request, *args, **kwargs):
@@ -99,12 +104,11 @@ class MedicoListCreate(generics.ListCreateAPIView):
 
         tokenData = {"username":request.data["username"],
                     "password":request.data["password"]}
-        tokenSerializer = TokenObtainPairSerializer(data=tokenData)
-        tokenSerializer.is_valid(raise_exception=True)
+        tokenSerializer = TokenObtainPairSerializer(data=tokenData) #Genera un token asociado al username y el password en las tablas especiales que se generan en la migración
+        tokenSerializer.is_valid(raise_exception=True) #Mira si es válido
 
-        return Response(tokenSerializer.validated_data, status=status.HTTP_201_CREATED)
+        return Response(tokenSerializer.validated_data, status=status.HTTP_201_CREATED) #Saca la respuesta con el token serilizer no con el serializer del rol
 
-    
 class MedicoRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Medico.objects.all()
     serializer_class = MedicoSerializer
@@ -167,7 +171,6 @@ class FamiliarListCreate(generics.ListCreateAPIView):
         tokenSerializer.is_valid(raise_exception=True)
 
         return Response(tokenSerializer.validated_data, status=status.HTTP_201_CREATED)
-
     
 class FamiliarRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Familiar.objects.all()
@@ -231,7 +234,6 @@ class AuxiliarListCreate(generics.ListCreateAPIView):
         tokenSerializer.is_valid(raise_exception=True)
 
         return Response(tokenSerializer.validated_data, status=status.HTTP_201_CREATED)
-
     
 class AuxiliarRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Auxiliar.objects.all()
@@ -338,17 +340,17 @@ class PacienteListCreate(generics.ListCreateAPIView):
 
 
     def post(self, request, *args, **kwargs):
-        print("POST a un familiar")
+        print("POST a un paciente")
         print(request.data)
         personaData = request.data.pop('Persona') #Pide los datos y extrae los datos de persona dejando como sobrante los datos de médico 
         serializerP  = PersonaSerializer(data=personaData) #Se añaden datos a serializador
         serializerP.is_valid(raise_exception=True) #Se verifica que los datos son válidos
         Persona = serializerP.save() #Si todo está válido se guarda
-        endData = request.data #Acá se pide la data sobrante que corresponde a los campos de médico
+        endData = request.data #Acá se pide la data sobrante que corresponde a los campos de paciente
         endData.update({"id":Persona.id}) #Se agrega la llave desde la tabla de persona para relacionar las tablas
-        serializerEnd = PacienteSerializer(data=endData) #Se añaden datos a serializador de médico
-        serializerEnd.is_valid(raise_exception=True) #El serializador verifica los datos de médico
-        serializerEnd.save() #Si todo esta correcto agrega los datos de médico a la base.
+        serializerEnd = PacienteSerializer(data=endData) #Se añaden datos a serializador de paciente
+        serializerEnd.is_valid(raise_exception=True) #El serializador verifica los datos de paciente
+        serializerEnd.save() #Si todo esta correcto agrega los datos de paciente a la base.
         return Response(status=status.HTTP_201_CREATED) #Da esta respuesta si se creó correctamente, para añadir otras respuestas se puede ver la documentación
 
 

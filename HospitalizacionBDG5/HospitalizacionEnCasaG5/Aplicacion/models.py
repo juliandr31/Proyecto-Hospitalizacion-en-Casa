@@ -90,8 +90,8 @@ class Paciente(models.Model):
     latitud = models.CharField('Latitud', max_length=45, null= True, blank= True)
     longitud = models.CharField('Longitud', max_length=45, null= True, blank= True)
     id = models.OneToOneField(Persona, null=False, blank=False, on_delete=models.CASCADE, primary_key= True)
-    medicoId = models.OneToOneField(Medico, null=False, blank=False, on_delete=models.CASCADE)
-    familiarId = models.OneToOneField(Familiar, null=False, blank=False, on_delete=models.CASCADE)
+    medicoId = models.ForeignKey(Medico, null=False, blank=False, on_delete=models.CASCADE)
+    familiarId = models.ForeignKey(Familiar, null=False, blank=False, on_delete=models.CASCADE)
 
     def nombrePaciente(self):
         txt = "{0}"
