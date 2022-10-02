@@ -22,7 +22,7 @@ class PersonaList(generics.ListCreateAPIView):
         print("GET a todos los usuarios del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
         serializer = PersonaSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
+        # serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
     
 class PersonaRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -72,19 +72,12 @@ class MedicoListCreate(generics.ListCreateAPIView):
     serializer_class = MedicoSerializer
     # permission_classes = (IsAuthenticated,)
 
-    def get(self, request, *args, **kwargs):
-        print("GET a médico")
-        """ if valid_data['user_id'] != kwargs['pk']:
-            stringResponse = {'detail':'Unauthorized Request'}
-            return Response(stringResponse, status=status.HTTP_401_UNAUTHORIZED) """
-        return super().get(request, *args, **kwargs)
-
-    # def list(self, request):
-    #     print("GET a todos los médicos del sistema")
-    #     queryset = self.get_queryset() #Acá se piden todos los objetos
-    #     serializer = MedicoSerializer(queryset, many=True)
-    #     serializer.is_valid(raise_exception=True)
-    #     return Response(serializer.data) #La respuesta es la data que trae e serializador
+    def list(self, request):
+        print("GET a todos los médicos del sistema")
+        queryset = self.get_queryset() #Acá se piden todos los objetos
+        serializer = MedicoSerializer(queryset, many=True)
+        # serializer.is_valid(raise_exception=True)
+        return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
     def post(self, request, *args, **kwargs):
@@ -146,7 +139,7 @@ class FamiliarListCreate(generics.ListCreateAPIView):
         print("GET a todos los familiares del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
         serializer = FamiliarSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
+        # serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
@@ -209,7 +202,7 @@ class AuxiliarListCreate(generics.ListCreateAPIView):
         print("GET a todos los familiares del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
         serializer = AuxiliarSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
+        # serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
@@ -272,7 +265,7 @@ class EnfermeroListCreate(generics.ListCreateAPIView):
         print("GET a todos los familiares del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
         serializer = EnfermeroSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
+        # serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
@@ -335,7 +328,7 @@ class PacienteListCreate(generics.ListCreateAPIView):
         print("GET a todos los familiares del sistema")
         queryset = self.get_queryset() #Acá se piden todos los objetos
         serializer = PacienteSerializer(queryset, many=True)
-        serializer.is_valid(raise_exception=True)
+        # serializer.is_valid(raise_exception=True)
         return Response(serializer.data) #La respuesta es la data que trae e serializador
 
 
